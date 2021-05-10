@@ -36,13 +36,28 @@ void loop() {
       left_hat_y_lsb,
       left_hat_y_msb
     };
-    
-    Wire.beginTransmission(8);                            // transmit to device #8
-    Wire.write(left_hat_bytes, sizeof(left_hat_bytes));   // send bytes for left hat
-    Wire.endTransmission();                               // stop transmitting
 
-    Wire.beginTransmission(9);                            // transmit to device #8
-    Wire.write(left_hat_bytes, sizeof(left_hat_bytes));   // send bytes for left hat
-    Wire.endTransmission();                               // stop transmitting
+    int right_hat_x = map(PS4.getAnalogHat(RightHatX), 0, 255, 0, 180);
+    int right_hat_y = map(PS4.getAnalogHat(RightHatY), 0, 255, 30, 150);
+
+    byte right_hat_x_lsb = right_hat_x & 0xff;
+    byte right_hat_x_msb = right_hat_x >> 8;
+    byte right_hat_y_lsb = right_hat_y & 0xff;
+    byte right_hat_y_msb = right_hat_y >> 8;
+
+    byte right_hat_bytes[] = {
+      right_hat_x_lsb,
+      right_hat_x_msb,
+      right_hat_y_lsb,
+      right_hat_y_msb
+    };
+
+    Wire.beginTransmission(8);                              // transmit to device #8
+    Wire.write(left_hat_bytes, sizeof(left_hat_bytes));     // send bytes for left hat
+    Wire.endTransmission();                                 // stop transmitting
+
+    Wire.beginTransmission(9);                              // transmit to device #9
+    Wire.write(right_hat_bytes, sizeof(right_hat_bytes));    // send bytes for right hat
+    Wire.endTransmission();                                 // stop transmitting
   }
 }

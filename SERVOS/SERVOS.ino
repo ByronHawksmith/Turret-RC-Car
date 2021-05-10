@@ -2,7 +2,7 @@
 
 void setup()
 {
-  Wire.begin(8);                // join i2c bus with address #9
+  Wire.begin(9);                // join i2c bus with address #9
   Wire.onReceive(receiveEvent); // register event
   Serial.begin(115200);         // start serial for output
 }
@@ -14,7 +14,7 @@ void loop()
 // function that executes whenever data is received from master
 // this function is registered as an event, see setup()
 void receiveEvent(int howMany)
-{
+{ 
   byte left_hat_x_lsb = Wire.read();
   byte left_hat_x_msb = Wire.read();
   byte left_hat_y_lsb = Wire.read();

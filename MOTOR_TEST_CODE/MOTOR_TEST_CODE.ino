@@ -15,11 +15,22 @@ const int motorPin6 = 7; // Pin 15 of L293D
 const int motorPin7 = 2;  // Pin 2 of L293D
 const int motorPin8 = 3;  // Pin 7 of L293D
 
+// joystick pins
+const int X_AX = A3; // analog pin 0 connected to X output of JoyStick
+const int Y_AX = A2; // analog pin 1 connected to Y output of JoyStick
+int x_pos;
+int y_pos;
+
+int rows = 0;
+
+int motion = 0;
+
+int motors[8] = {motorPin1, motorPin2, motorPin3, motorPin4, motorPin5, motorPin6, motorPin7, motorPin8};
 
 //This will run only one time.
 void setup(){
- 
-    //Set pins as outputs
+    Serial.begin(115200);
+    //Set motor pins as outputs
     pinMode(motorPin1, OUTPUT);
     pinMode(motorPin2, OUTPUT);
     pinMode(motorPin3, OUTPUT);
@@ -28,78 +39,110 @@ void setup(){
     pinMode(motorPin6, OUTPUT);
     pinMode(motorPin7, OUTPUT);
     pinMode(motorPin8, OUTPUT);
-  
+    
+    pinMode(X_AX, INPUT);                     
+    pinMode(Y_AX, INPUT);  
+    showHeading();
+
 }
 
 
 void loop(){
+x_pos = analogRead(X_AX);
+y_pos = analogRead(Y_AX);
 
-    //This code  will turn Motor A clockwise for 2 sec.
-    digitalWrite(motorPin1, HIGH);
-    digitalWrite(motorPin2, LOW);
-    digitalWrite(motorPin3, LOW);
-    digitalWrite(motorPin4, LOW);
-    delay(2000); 
-    
-    //This code will turn Motor A counter-clockwise for 2 sec.
-    digitalWrite(motorPin1, LOW);
-    digitalWrite(motorPin2, HIGH);
-    digitalWrite(motorPin3, LOW);
-    digitalWrite(motorPin4, LOW);
-    delay(2000);
-    
-    //This code will turn Motor B clockwise for 2 sec.
-    digitalWrite(motorPin1, LOW);
-    digitalWrite(motorPin2, LOW);
-    digitalWrite(motorPin3, HIGH);
-    digitalWrite(motorPin4, LOW);
-    delay(2000); 
-    
-    //This code will turn Motor B counter-clockwise for 2 sec.
-    digitalWrite(motorPin1, LOW);
-    digitalWrite(motorPin2, LOW);
-    digitalWrite(motorPin3, LOW);
-    digitalWrite(motorPin4, HIGH);
-    delay(2000);    
+  Serial.print(x_pos);
+  Serial.print("          ");
+  Serial.println(y_pos);
+  delay(100);
+    if(y_pos == 0) {
+      forward();
+    }
+    else if(y_pos == 255) {
+      backward();
+    }
+    else if(x_pos == 0) {
+      left();
+    }
+    else if(x_pos == 255) {
+      right();
+    }else {
+      for (int i = 0; i < sizeof(motors) / sizeof(int); ++i){
+        // Stop all Motors.
+        digitalWrite(motors[i], LOW);
+      }
+    }
+}
 
-    //And this code will stop motors
-    digitalWrite(motorPin1, LOW);
-    digitalWrite(motorPin2, LOW);
-    digitalWrite(motorPin3, LOW);
-    digitalWrite(motorPin4, LOW);
+void forward()
+{
+  Serial.println("Forward!");
+  for (int i = 0; i < sizeof(motors) / sizeof(int); ++i)
+  {
+    // Stop all Motors.
+    digitalWrite(motors[i], LOW);
+  }
+  // Motor A clockwise.
+  digitalWrite(motorPin2, HIGH);
+  // Motor B counter-clockwise.
+  digitalWrite(motorPin3, HIGH);
+  // Motor C clockwise.
+  digitalWrite(motorPin6, HIGH);
+  // Motor D counter-clockwise.
+  digitalWrite(motorPin7, HIGH);
+}
 
-    //This code  will turn Motor C clockwise for 2 sec.
-    digitalWrite(motorPin5, HIGH);
-    digitalWrite(motorPin6, LOW);
-    digitalWrite(motorPin7, LOW);
-    digitalWrite(motorPin8, LOW);
-    delay(2000); 
-    
-    //This code will turn Motor C counter-clockwise for 2 sec.
-    digitalWrite(motorPin5, LOW);
-    digitalWrite(motorPin6, HIGH);
-    digitalWrite(motorPin7, LOW);
-    digitalWrite(motorPin8, LOW);
-    delay(2000);
-    
-    //This code will turn Motor D clockwise for 2 sec.
-    digitalWrite(motorPin5, LOW);
-    digitalWrite(motorPin6, LOW);
-    digitalWrite(motorPin7, HIGH);
-    digitalWrite(motorPin8, LOW);
-    delay(2000); 
-    
-    //This code will turn Motor D counter-clockwise for 2 sec.
-    digitalWrite(motorPin5, LOW);
-    digitalWrite(motorPin6, LOW);
-    digitalWrite(motorPin7, LOW);
-    digitalWrite(motorPin8, HIGH);
-    delay(2000); 
+void backward(){
+  Serial.println("Backward!");
+  for (int i = 0; i < sizeof(motors) / sizeof(int); ++i)
+  {
+    // Stop all Motors.
+    digitalWrite(motors[i], LOW);
+  }
+  // Motor A counter-clockwise.
+  digitalWrite(motorPin1, HIGH);
+  // Motor B clockwise.
+  digitalWrite(motorPin4, HIGH);
+  // Motor C counter-clockwise.
+  digitalWrite(motorPin5, HIGH);
+  // Motor D clockwise.
+  digitalWrite(motorPin8, HIGH);
+}
 
-    //And this code will stop motors
-    digitalWrite(motorPin5, LOW);
-    digitalWrite(motorPin6, LOW);
-    digitalWrite(motorPin7, LOW);
-    digitalWrite(motorPin8, LOW);
+void left(){
+  Serial.println("Left!");
+  for (int i = 0; i < sizeof(motors) / sizeof(int); ++i)
+  {
+    // Stop all Motors.
+    digitalWrite(motors[i], LOW);
+  }
+  // Motor A clockwise.
+  digitalWrite(motorPin2, HIGH);
+  // Motor B clockwise.
+  digitalWrite(motorPin4, HIGH);
+  // Motor C clockwise.
+  digitalWrite(motorPin6, HIGH);
+  // Motor D clockwise.
+  digitalWrite(motorPin8, HIGH);
+}
 
+void right(){
+  for (int i = 0; i < sizeof(motors) / sizeof(int); ++i)
+  {
+    // Stop all Motors.
+    digitalWrite(motors[i], LOW);
+  }
+  Serial.println("Right!");
+  // Motor A counter-clockwise.
+  digitalWrite(motorPin1, HIGH);
+  // Motor B counter-clockwise.
+  digitalWrite(motorPin3, HIGH);
+  // Motor C counter-clockwise.
+  digitalWrite(motorPin5, HIGH);
+  // Motor D counter-clockwise.
+  digitalWrite(motorPin7, HIGH);
+}
+
+void showHeading() {
+  Serial.println("X axis      Y axis");
 }

@@ -44,12 +44,14 @@ void loop() {
     byte right_hat_x_msb = right_hat_x >> 8;
     byte right_hat_y_lsb = right_hat_y & 0xff;
     byte right_hat_y_msb = right_hat_y >> 8;
+    byte r2_button = PS4.getAnalogButton(R2);
 
     byte right_hat_bytes[] = {
       right_hat_x_lsb,
       right_hat_x_msb,
       right_hat_y_lsb,
-      right_hat_y_msb
+      right_hat_y_msb,
+      r2_button
     };
 
     Wire.beginTransmission(8);                              // transmit to device #8

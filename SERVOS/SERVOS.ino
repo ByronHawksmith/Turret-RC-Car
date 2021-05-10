@@ -3,16 +3,16 @@
 
 Servo panServo;   // create servo object to control a servo
 Servo tiltServo;  // create servo object to control a servo
-//Servo fireServo;  // create servo object to control a servo
+Servo fireServo;  // create servo object to control a servo
 
 static volatile int right_hat_x;
 static volatile int right_hat_y;
+static volatile int r2_button;
 
 void setup()
 {
   panServo.attach(2);  
   tiltServo.attach(3);
-//  fireServo.attach(4);
   Wire.begin(9);                // join i2c bus with address #9
   Wire.onReceive(receiveEvent); // register event
   Serial.begin(115200);         // start serial for output
@@ -27,13 +27,14 @@ void loop()
     my_right_hat_y = right_hat_y;
   interrupts();
   
-  Serial.print(F("\r\nRightHatX: "));
-  Serial.print(my_right_hat_x);
-  panServo.write(my_right_hat_x);
-    
-  Serial.print(F("\tRightHatY: "));
-  Serial.print(my_right_hat_y);
+  panServo.write(my_right_hat_x);    
   tiltServo.write(my_right_hat_y);
+
+  if(r2_button) {
+    fireServo.attach(4);
+  } else {
+    fireServo.detach();
+  }
 
   delay(100);
 }
@@ -46,6 +47,7 @@ void receiveEvent(int howMany)
   byte right_hat_x_msb = Wire.read();
   byte right_hat_y_lsb = Wire.read();
   byte right_hat_y_msb = Wire.read();
+  r2_button = Wire.read();
 
   right_hat_x = (right_hat_x_msb << 8) | right_hat_x_lsb;
   right_hat_y = (right_hat_y_msb << 8) | right_hat_y_lsb;

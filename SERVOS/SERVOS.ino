@@ -1,34 +1,25 @@
-// Wire Slave Receiver
-// by Nicholas Zambetti <http://www.zambetti.com>
-
-// Demonstrates use of the Wire library
-// Receives data as an I2C/TWI slave device
-// Refer to the "Wire Master Writer" example for use with this
-
-// Created 29 March 2006
-
-// This example code is in the public domain.
-
-
 #include <Wire.h>
 
-void setup() {
-  Wire.begin(8);                  // join i2c bus with address #9
-  Wire.onReceive(receiveEvent);   // register event
-  Serial.begin(115200);           // start serial for output
+void setup()
+{
+  Wire.begin(8);                // join i2c bus with address #9
+  Wire.onReceive(receiveEvent); // register event
+  Serial.begin(115200);         // start serial for output
 }
 
-void loop() {
+void loop()
+{
 }
 
 // function that executes whenever data is received from master
 // this function is registered as an event, see setup()
-void receiveEvent(int howMany) {
+void receiveEvent(int howMany)
+{
   byte left_hat_x_lsb = Wire.read();
   byte left_hat_x_msb = Wire.read();
   byte left_hat_y_lsb = Wire.read();
   byte left_hat_y_msb = Wire.read();
-  
+
   int left_hat_x = (left_hat_x_msb << 8) | left_hat_x_lsb;
   int left_hat_y = (left_hat_y_msb << 8) | left_hat_y_lsb;
 
